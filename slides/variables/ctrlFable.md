@@ -1,4 +1,4 @@
 ### Variables facilent à chercher
 
 'Ctrl+F'able  
-![](/images/code/ctrlFable.png)
+![](../../images/code/ctrlFable.png)
