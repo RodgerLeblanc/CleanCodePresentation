@@ -1,9 +1,9 @@
 # References
 
-Slides: http://bit.ly/cleanCodePresentation
+Slides: [bit.ly/cleanCodePresentation](http://bit.ly/cleanCodePresentation)
 
-Cheat sheet: http://bit.ly/cleanCodeCheatSheet
+Cheat sheet: [bit.ly/cleanCodeCheatSheet](http://bit.ly/cleanCodeCheatSheet)
 
-Clean Code .NET: http://bit.ly/cleanCodeDotNet
+Clean Code .NET: [bit.ly/cleanCodeDotNet](http://bit.ly/cleanCodeDotNet)
 
-Autres langues: http://bit.ly/cleanCodeOtherLanguages
+Autres langues: [bit.ly/cleanCodeOtherLanguages](http://bit.ly/cleanCodeOtherLanguages)
