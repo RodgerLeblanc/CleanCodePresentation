@@ -1,2 +1,2 @@
 ### Pas de string magiques
-![](../../images/code/magicStrings.png)
+![](images/code/magicStrings.png?raw=true)

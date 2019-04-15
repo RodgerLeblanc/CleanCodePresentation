@@ -1,5 +1,5 @@
 ### As-tu vraiment besoin d'un Singleton?
-![](../../images/code/singletonBad.png)![](../../images/code/singletonGood.png)
+![](images/code/singletonBad.png?raw=true)![](images/code/singletonGood.png?raw=true)
 
 Note:
 - Tightly coupled à une classe concrète
