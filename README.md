@@ -1,4 +1,4 @@
-Ce projet fait suite à la présentation Clean Code tenue chez Microsoft Montréal le 17 avril 2019.
+Ce projet fait suite à la présentation Clean Code tenue chez Microsoft Montréal le 18 avril 2019.
 
 Merci à tous ceux qui se sont déplacés pour le Meetup, j'ai eu de superbes discussions avec vous tous ce soir!
 
