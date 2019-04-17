@@ -1,4 +1,4 @@
-# References
+# Références
 
 Slides: [bit.ly/cleanCodePresentation](http://bit.ly/cleanCodePresentation)
 
