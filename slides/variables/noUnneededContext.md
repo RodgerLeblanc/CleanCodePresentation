@@ -1,5 +1,2 @@
-### Ne pas ajouter de contexte inutile
+### Mais pas trop
 ![](images/code/noUnneededContext.png?raw=true)
-
-Note:
-Prochaines slides sur les fonctions
