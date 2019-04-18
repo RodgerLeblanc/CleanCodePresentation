@@ -5,3 +5,4 @@ Note:
 - Difficile à mocker
 - Chaque classe qui utilise ton Singleton dépend donc d'une classe concrète
 - Conserve un état, oblige les tests à rouler dans un ordre précis
+- Imagine un Singleton pour un HttpClient, pas moyen de mocker cette classe dans les test unitaires
