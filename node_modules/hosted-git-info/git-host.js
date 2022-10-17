@@ -1,96 +1,110 @@
 'use strict'
-var gitHosts = require('./git-host-info.js')
+const gitHosts = require('./git-host-info.js')
 
-var GitHost = module.exports = function (type, user, auth, project, committish, defaultRepresentation) {
-  var gitHostInfo = this
-  gitHostInfo.type = type
-  Object.keys(gitHosts[type]).forEach(function (key) {
-    gitHostInfo[key] = gitHosts[type][key]
-  })
-  gitHostInfo.user = user
-  gitHostInfo.auth = auth
-  gitHostInfo.project = project
-  gitHostInfo.committish = committish
-  gitHostInfo.default = defaultRepresentation
-}
-GitHost.prototype = {}
+class GitHost {
+  constructor (type, user, auth, project, committish, defaultRepresentation, opts = {}) {
+    Object.assign(this, gitHosts[type])
+    this.type = type
+    this.user = user
+    this.auth = auth
+    this.project = project
+    this.committish = committish
+    this.default = defaultRepresentation
+    this.opts = opts
+  }
 
-GitHost.prototype.hash = function () {
-  return this.committish ? '#' + this.committish : ''
-}
+  hash () {
+    return this.committish ? `#${this.committish}` : ''
+  }
 
-GitHost.prototype._fill = function (template, vars) {
-  if (!template) return
-  if (!vars) vars = {}
-  var self = this
-  Object.keys(this).forEach(function (key) {
-    if (self[key] != null && vars[key] == null) vars[key] = self[key]
-  })
-  var rawAuth = vars.auth
-  var rawComittish = vars.committish
-  Object.keys(vars).forEach(function (key) {
-    vars[key] = encodeURIComponent(vars[key])
-  })
-  vars['auth@'] = rawAuth ? rawAuth + '@' : ''
-  vars['#committish'] = rawComittish ? '#' + rawComittish : ''
-  vars['/tree/committish'] = vars.committish
-                          ? '/' + vars.treepath + '/' + vars.committish
-                          : ''
-  vars['/committish'] = vars.committish ? '/' + vars.committish : ''
-  vars.committish = vars.committish || 'master'
-  var res = template
-  Object.keys(vars).forEach(function (key) {
-    res = res.replace(new RegExp('[{]' + key + '[}]', 'g'), vars[key])
-  })
-  return res
-}
+  ssh (opts) {
+    return this._fill(this.sshtemplate, opts)
+  }
 
-GitHost.prototype.ssh = function () {
-  return this._fill(this.sshtemplate)
-}
+  _fill (template, opts) {
+    if (typeof template === 'function') {
+      const options = { ...this, ...this.opts, ...opts }
 
-GitHost.prototype.sshurl = function () {
-  return this._fill(this.sshurltemplate)
-}
+      // the path should always be set so we don't end up with 'undefined' in urls
+      if (!options.path) {
+        options.path = ''
+      }
 
-GitHost.prototype.browse = function () {
-  return this._fill(this.browsetemplate)
-}
+      // template functions will insert the leading slash themselves
+      if (options.path.startsWith('/')) {
+        options.path = options.path.slice(1)
+      }
 
-GitHost.prototype.docs = function () {
-  return this._fill(this.docstemplate)
-}
+      if (options.noCommittish) {
+        options.committish = null
+      }
 
-GitHost.prototype.bugs = function () {
-  return this._fill(this.bugstemplate)
-}
+      const result = template(options)
+      return options.noGitPlus && result.startsWith('git+') ? result.slice(4) : result
+    }
 
-GitHost.prototype.https = function () {
-  return this._fill(this.httpstemplate)
-}
+    return null
+  }
 
-GitHost.prototype.git = function () {
-  return this._fill(this.gittemplate)
-}
+  sshurl (opts) {
+    return this._fill(this.sshurltemplate, opts)
+  }
 
-GitHost.prototype.shortcut = function () {
-  return this._fill(this.shortcuttemplate)
-}
+  browse (path, fragment, opts) {
+    // not a string, treat path as opts
+    if (typeof path !== 'string') {
+      return this._fill(this.browsetemplate, path)
+    }
 
-GitHost.prototype.path = function () {
-  return this._fill(this.pathtemplate)
-}
+    if (typeof fragment !== 'string') {
+      opts = fragment
+      fragment = null
+    }
+    return this._fill(this.browsefiletemplate, { ...opts, fragment, path })
+  }
 
-GitHost.prototype.file = function (P) {
-  return this._fill(this.filetemplate, {
-    path: P.replace(/^[/]+/g, '')
-  })
-}
+  docs (opts) {
+    return this._fill(this.docstemplate, opts)
+  }
 
-GitHost.prototype.getDefaultRepresentation = function () {
-  return this.default
-}
+  bugs (opts) {
+    return this._fill(this.bugstemplate, opts)
+  }
 
-GitHost.prototype.toString = function () {
-  return (this[this.default] || this.sshurl).call(this)
+  https (opts) {
+    return this._fill(this.httpstemplate, opts)
+  }
+
+  git (opts) {
+    return this._fill(this.gittemplate, opts)
+  }
+
+  shortcut (opts) {
+    return this._fill(this.shortcuttemplate, opts)
+  }
+
+  path (opts) {
+    return this._fill(this.pathtemplate, opts)
+  }
+
+  tarball (opts) {
+    return this._fill(this.tarballtemplate, { ...opts, noCommittish: false })
+  }
+
+  file (path, opts) {
+    return this._fill(this.filetemplate, { ...opts, path })
+  }
+
+  getDefaultRepresentation () {
+    return this.default
+  }
+
+  toString (opts) {
+    if (this.default && typeof this[this.default] === 'function') {
+      return this[this.default](opts)
+    }
+
+    return this.sshurl(opts)
+  }
 }
+module.exports = GitHost
